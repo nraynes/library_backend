@@ -4,6 +4,7 @@ import db from './db/db.js';
 
 const app = express();
 
+
 app.use(cors());
 app.use(express.json());
 
@@ -84,10 +85,11 @@ app.get('/api/books/filter/:bookId', (req,res)=>{
 
 app.put('/api/books/:bookId/checkout/:userId', (req,res)=>{
     // console.log(req.params)
-    db.any(`UPDATE books SET "checked_out" = true FROM users WHERE books."isbn" = '${req.params.bookId}' AND users."user_id" = ${req.params.userId};UPDATE orders SET "date_checked_out" = NOW(), "due_date" = NOW() + INTERVAL '14 days' WHERE "user_id" = ${req.params.userId};`)
+    db.any(`INSERT INTO orders ("isbn","user_id","date_checked_out","due_date") VALUES ('${req.params.bookId}',${req.params.userId}, NOW(), NOW() + INTERVAL '14 days');UPDATE books SET "checked_out" = true WHERE books."isbn" = '${req.params.bookId}';`)
+    //db.any(`UPDATE books SET "checked_out" = true FROM users WHERE books."isbn" = '${req.params.bookId}';`)
         .then(()=>{
             // console.log(data)
-            db.any(`SELECT books."isbn","title","author","checked_out","order_id","user_id","date_checked_out","due_date","return_date" FROM books FULL JOIN orders ON books.isbn = orders.isbn WHERE books."isbn"='${isbn}' ORDER BY "order_id" DESC LIMIT 1;`)
+            db.any(`SELECT books."isbn","title","author","checked_out","order_id","user_id","date_checked_out","due_date","return_date" FROM books FULL JOIN orders ON books.isbn = orders.isbn WHERE books."isbn"='${req.params.bookId}' ORDER BY "order_id" DESC LIMIT 1;`)
                 .then((theData)=> {
                     res.status(200).send(theData);
                 })

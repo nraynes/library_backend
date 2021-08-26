@@ -5,19 +5,15 @@ const pgp = pgPromise({});
 const dbParams = {
     platform: "postgresql",
     host: "localhost",
-    port: "65079",
+    port: "50297",
     username: "postgres",
     password: "mysecretpassword",
     database: "postgres"
 };
 
-
 const dbConnect = `${dbParams.platform}://${dbParams.username}:${dbParams.password}@${dbParams.host}:${dbParams.port}/${dbParams.database}`;
 
-
-
 var db = pgp(dbConnect)
-
 
 db.connect()
     .then(obj => {
